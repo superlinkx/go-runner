@@ -52,8 +52,8 @@ func GetAllSupportedFiles(startDir string) ([]string, error) {
 }
 
 func WriteLicenseToFile(path string, license string) error {
-	bytes := []byte(license)
-	if _, licenseFirstLine, err := bufio.ScanLines(bytes, true); err != nil {
+	licenseBytes := []byte(license)
+	if _, licenseFirstLine, err := bufio.ScanLines(licenseBytes, true); err != nil {
 		return fmt.Errorf("error getting first line of license: %s", err)
 	} else if file, err := os.ReadFile(path); err != nil {
 		return fmt.Errorf("error opening file %s: %s", path, err)
@@ -64,7 +64,7 @@ func WriteLicenseToFile(path string, license string) error {
 		return nil
 	} else if info, err := os.Stat(path); err != nil {
 		return fmt.Errorf("error getting file info for %s: %s", path, err)
-	} else if err := os.WriteFile(path, []byte{}, info.Mode().Perm()); err != nil {
+	} else if err := os.WriteFile(path, append(licenseBytes, file...), info.Mode().Perm()); err != nil {
 		return fmt.Errorf("error writing file %s: %s", path, err)
 	} else {
 		return nil
