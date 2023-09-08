@@ -1,7 +1,7 @@
 package license
 
 import (
-	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/superlinkx/go-runner/environment"
@@ -42,8 +42,15 @@ func (c cmd) Usage() string {
 func (c cmd) Run() error {
 	if formatted, err := license.ReadLicenseFile(c.LicenseFile); err != nil {
 		return err
+	} else if files, err := license.GetAllSupportedFiles("."); err != nil {
+		return err
 	} else {
-		fmt.Print(formatted)
+		slog.Info("Writing license to files", "files", files, "license", formatted)
+		for _, file := range files {
+			if err := license.WriteLicenseToFile(file, formatted); err != nil {
+				return err
+			}
+		}
 		return nil
 	}
 }

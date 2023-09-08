@@ -29,7 +29,7 @@ func setLogger() error {
 
 	envLvl := os.Getenv(environment.LogLevel.Env())
 	if envLvl == "" {
-		logLevel = slog.LevelError
+		logLevel = slog.LevelInfo
 	} else {
 		switch envLvl {
 		case "debug":
