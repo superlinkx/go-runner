@@ -39,7 +39,7 @@ func ReadLicenseFile(path string) (string, error) {
 func GetAllSupportedFiles(startDir string) ([]string, error) {
 	var files []string
 	if err := filepath.Walk(startDir, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
+		if info.IsDir() || !strings.HasSuffix(info.Name(), ".go") {
 			return nil
 		} else {
 			files = append(files, path)
@@ -64,7 +64,7 @@ func WriteLicenseToFile(path string, license string) error {
 		scanner := bufio.NewScanner(file)
 		scanner.Scan()
 
-		if string(licenseFirstLine) != scanner.Text() {
+		if string(licenseFirstLine) == scanner.Text() {
 			// We found the start of the license, so do nothing
 			return nil
 		} else if err := scanner.Err(); err != nil {
